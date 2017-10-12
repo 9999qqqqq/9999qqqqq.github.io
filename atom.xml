@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2017-10-12T03:35:25.566Z</updated>
+  <updated>2017-10-12T03:47:20.734Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -21,15 +21,15 @@
     <link href="http://yoursite.com/2017/10/12/1/"/>
     <id>http://yoursite.com/2017/10/12/1/</id>
     <published>2017-10-12T03:34:27.000Z</published>
-    <updated>2017-10-12T03:35:25.566Z</updated>
+    <updated>2017-10-12T03:47:20.734Z</updated>
     
-    <content type="html"><![CDATA[<p>测试</p>]]></content>
+    <content type="html"><![CDATA[<p>测试<img src="https://raw.githubusercontent.com/hongmaju/light7Local/master/img/productShow/20170518152848.png" alt="Image text"></p>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;测试&lt;/p&gt;
+        &lt;p&gt;测试&lt;img src=&quot;https://raw.githubusercontent.com/hongmaju/light7Local/master/img/productShow/20170518152848.png&quot; alt=&quot;Image text&quot;&gt;&lt;/p&gt;
 
       
     
