@@ -334,6 +334,8 @@ var json= {"list":
    },{
    "name":"新加坡OKTO",
    "srcurl":"http://tgloktoh-i.akamaihd.net/hls/live/566482/ctv/02.m3u8"
-
+   },{
+   "name":"动作电影",
+   "srcurl":"http://mlive1.91kds.com/c9/qiyi3.m3u8?id=qiyidzdy&nwtime=1521038044&sign=4ddcec025856d0e57ee9834e1f7e5fd1&mip=47.52.236.182&from=net&1521038072"
    }]
  }
