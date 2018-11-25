@@ -13,7 +13,7 @@ var json= {"list":
    "srcurl":"http://223.110.243.138/PLTV/2510088/224/3221227162/1.m3u8"
    },{
    "name":"CCTV-5",
-   "srcurl":"http://223.110.243.149/PLTV/3/224/3221227166/index.m3u8"
+   "srcurl":"cctv5.txty.5213.liveplay.myqcloud.com/live/cctv5_txty.m3u8"
    },{
    "name":"CCTV-5+",
    "srcurl":"http://183.252.176.40//PLTV/88888888/224/3221225939/index.m3u8"
