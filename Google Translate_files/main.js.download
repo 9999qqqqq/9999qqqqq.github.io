@@ -1,0 +1,274 @@
+$( document ).ready(function() {
+
+
+
+
+/*меню для адаптивки*/
+$("#amenu").click(function(event) {
+	if($("#menu_adaptive").is(":visible"))
+		$("#menu_adaptive").slideUp('fast');
+	else
+		$("#menu_adaptive").slideDown('fast');
+});
+/***********/
+
+
+
+
+/*переключатель на странице разделов*/
+$('#posts_list > div:not(:first)').hide();
+
+$("#switcher a[href^='#']").click(function(event) {
+event.preventDefault();
+$('#posts_list > div').hide();
+var clicked = $(this).attr('href');
+if(clicked=='#') clicked = '#posts';
+//$(clicked).show();
+$(clicked + '_').show();
+$('#switcher a').removeClass();
+$(this).addClass('checked');
+if(clicked == '#posts') clicked = '#';
+history.pushState(null, null, clicked);
+});
+
+if($("#switcher").length && window.location.hash){
+	$('#switcher a[href=' + window.location.hash + ']').click();
+}
+/***********/
+
+
+/*переключатель страниц в обзорах*/
+$('.pageselect').change(function(event){
+	document.location.href = $(this).val();
+});
+/***********/
+
+
+/*переключатель в спецификациях*/
+$('#specselect').change(function(event){
+	document.location.href = $(this).val();
+});
+/***********/
+
+/*сравнение в спецификациях*/
+$('#compare').click(function(event){
+	var url;
+
+	var length = $('#compareselect').val().length;
+	if (length<1) return;
+
+	if($('#compare_type').val() == 'cpu') var type = 'cpu';
+	else if($('#compare_type').val() == 'gpu') var type = 'gpu';
+	else return;
+
+
+	if($('#'+ type +'_id').val() && length>9)
+		length = 9;
+	else if	(length>10)
+		length = 10;
+
+
+	if($('#' + type +'_id').val())
+		url = $('#' + type + '_id').val() + '-';
+	else
+		url ='';
+
+
+	$.each($('#compareselect').val(),function(index, value){
+		if (index <= length-1) url = url + value ;
+		if (index < length-1) url = url + '-';
+	});
+
+
+	if(type == 'cpu') document.location.href = '/cpu/info/compare/' + url + '/';
+	if(type == 'gpu') document.location.href = '/video/gpu/compare/' + url + '/';
+});
+
+
+
+
+$('#comparereset').click(function(event){
+	$('#compareselect option').removeProp('selected');
+});
+/***********/
+
+
+/*разворачивалка списка в спецификациях*/
+$('.spec_list li.switch a').click(function(event){
+	event.preventDefault();
+	$(this).parent('li').parent('ul').children('li').show();
+	$(this).parent('li.switch').hide();
+});
+
+/***********/
+
+
+/*социальные кнопки*/
+//http://sapegin.github.io/social-likes/
+$('.share .fb').click(function(event){
+	var url = 'https://www.facebook.com/sharer/sharer.php?u=' + $(this).parent('div.share').attr('data-url');
+	sharePopup(url, 600, 359, "Facebook");
+});
+$('.share .vk').click(function(event){
+	var url = 'https://vk.com/share.php?url=' + $(this).parent('div.share').attr('data-url');
+	sharePopup(url, 655, 455, "VK");
+});
+$('.share .twitter').click(function(event){
+	var url = 'https://twitter.com/share?url=' + $(this).parent('div.share').attr('data-url') + '&text=' + $(this).parent('div.share').attr('data-title');
+	sharePopup(url, 600, 250, "Twitter");
+});
+$('.share .pocket').click(function(event){
+	var url = 'https://getpocket.com/edit?url=' + $(this).parent('div.share').attr('data-url');
+	sharePopup(url, 500, 400, "Pocket");
+});
+$('.share .telegram').click(function(event){
+	var url = 'https://telegram.me/share/url?url=' + $(this).parent('div.share').attr('data-url') + '&text=' + $("#post > h1").html();
+	sharePopup(url, 600, 400, "Telegram");
+});
+/***********/
+
+
+
+var shares = $('#post > .share, #reviewpanel > .share');
+var sharesUrl = new Array();
+$.each(shares, function(index, value){
+	sharesUrl.push($(this).attr('data-url'));
+});
+
+//для получения кол-ва прямыми запросами
+if(sharesUrl.length > 0 && sharesUrl.length < 2){		//получаем данные только на страницах с одним материалом
+//if(sharesUrl.length > 0){		//получаем данные на всех страницах, в т.ч. на страницах с несколькими материалами
+	//getSharesFacebook(sharesUrl);
+	getSharesFacebook_28(sharesUrl); //для версии API 2.8
+	//getSharesVK(sharesUrl);
+	//getSharesPocket(sharesUrl);
+}
+
+if(sharesUrl.length > 1){
+	//getSharesFacebook_28(sharesUrl);
+}
+
+
+
+//для получения кол-ва шар через php-скрипт
+/*
+//if(sharesUrl.length > 0 && sharesUrl.length < 2)
+if(sharesUrl.length > 0)
+	getShares(sharesUrl);
+*/
+/***********/
+
+
+});
+
+
+function sharePopup(url, width, height, title){
+	var left = Math.round(screen.width/2 - width/2);
+	var top = 0;
+	if (screen.height > height)
+		top = Math.round(screen.height/3 - height/2);
+
+	window.open(url, title, "width="+ width +",height="+ height +",left="+ left +",top="+ top +",scrollbars=1,resizable=1,menubar=0,toolbar=0,status=0");
+}
+
+
+/*получение кол-ва шар через php-скрипт*/
+function getShares(url){
+	$.post(
+		"/socials/shares/",
+		{
+			url: url,
+		},
+		function (json){
+			data = $.parseJSON(json);
+
+			$.each(data, function(index, value){
+				if(data[index].facebook > 0)
+					$('.share[data-url="' + data[index].url + '"] .fb span').html(data[index].facebook).css('display', 'inline-block');
+				if(data[index].vk > 0)
+					$('.share[data-url="' + data[index].url + '"] .vk span').html(data[index].vk).css('display', 'inline-block');
+				if(data[index].pocket > 0)
+					$('.share[data-url="' + data[index].url + '"] .pocket span').html(data[index].pocket).css('display', 'inline-block');
+			});
+
+		});
+}
+
+
+/*функции для просмотра кол-ва шар напрямую*/
+function getSharesFacebook(sharesUrl){
+	var urls = '';
+	$.each(sharesUrl, function(index, value){
+		urls += '%27' + sharesUrl[index] + '%27,'
+	});
+	urls = "http://graph.facebook.com/fql?q=SELECT%20url,%20total_count%20FROM%20link_stat%20WHERE%20url%20in%28" + urls + "%27%27%29",
+	$.get(
+		urls,
+		{},
+		function (json){
+			var data = json.data;
+			$.each(data, function(index, value){
+				if(data[index].total_count > 0)
+					$('.share[data-url="' + data[index].url + '"] .fb span').html(data[index].total_count).css('display', 'inline-block');
+			});
+		}
+	);
+}
+
+function getSharesFacebook_28(sharesUrl){
+	$.each(sharesUrl, function(index, value){
+		url = 'https://graph.facebook.com/?id=' + value;
+		$.get(
+			url,
+			{},
+			function (json){
+				if(typeof json.share !== "undefined")
+					var data = json.share.share_count;
+				else return;
+				if(data > 0)
+					$('.share[data-url="' + value + '"] .fb span').html(data).css('display', 'inline-block');
+			});
+		}
+	);
+}
+
+
+function getSharesPocket(sharesUrl){
+	$.each(sharesUrl, function(index, value){
+		//url = "http://widgets.getpocket.com/v1/button?count=vertical&url=" + value;
+		//для получения данных используем сервис Yahoo APIs, для обхода ограничений кросс-доменных AJAX-запросов
+
+		url = 'https://query.yahooapis.com/v1/public/yql?q='
+		+ encodeURIComponent('select * from html where url="https://widgets.getpocket.com/v1/button?count=horizontal&url=' + value + '&src=1" and xpath="*"')
+		+ '&format=json&callback=?';
+
+		$.getJSON(
+			url,
+			{},
+			function (data){
+				if(data.query.results.html.body.div.a.span.em.content > 0){
+					pocket = data.query.results.html.body.div.a.span.em.content;
+					$('.share[data-url="' + value + '"] .pocket span').html(pocket).css('display', 'inline-block');
+					delete pocket;
+				}
+			}
+			);
+	});
+}
+
+
+function getSharesVK(sharesUrl){
+	$.each(sharesUrl, function(index, value){
+
+		VK = {};
+		VK.Share = {};
+		VK.Share.count = function(url_index, count){
+
+			if(count>0)
+				$('.share[data-url="' + sharesUrl[url_index] + '"] .vk span').html(count).css('display', 'inline-block');
+		};
+
+		$.getJSON('https://vk.com/share.php?act=count&url=' + value + '&index=' + index + '&format=json&callback=?');
+	});
+
+}
